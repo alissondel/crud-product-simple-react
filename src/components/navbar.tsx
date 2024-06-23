@@ -6,7 +6,7 @@ export function Navbar() {
       <a className="cursor-pointer pt-[2px] text-xl font-bold text-slate-900 hover:text-blue-500 dark:text-white">
         Forms Online
       </a>
-      <ul className="hidden items-center justify-between gap-6 md:flex">
+      <ul className="flex items-center justify-between gap-6 sm:hidden">
         <li className="text-slate-900 hover:text-blue-500 dark:text-white">
           Olá, Alisson!
         </li>
@@ -17,7 +17,7 @@ export function Navbar() {
           Sair
         </li>
       </ul>
-      <div className="flex items-center justify-center md:hidden">
+      <div className="hidden items-center justify-center sm:flex">
         <span className="cursor-pointer text-xl text-white hover:text-blue-500">
           <FaBars />
         </span>

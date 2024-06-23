@@ -1,20 +1,26 @@
 import { Form } from './form'
 import { Button } from '../../components/custom/button'
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useFetch } from '../../hooks/useFetch'
 import { URL_PRODUCTS } from '../../constants/url'
 import { useConnection } from '../../hooks/useConnect'
 import { InitialStateProduct } from './initialstate'
 import { ToastError, ToastSucess } from '../../components/custom/toast'
 import { ProductData } from '../../interfaces/product'
+import { Search } from '../../components/custom/search'
 export function List() {
   const [formValue, setFormValue] = useState<ProductData>(InitialStateProduct)
+  const [search, setSearch] = useState('')
 
   const [openModal, setOpenModal] = useState<boolean>(false)
   const { data, loading, error } = useFetch<ProductData[]>(URL_PRODUCTS)
 
   function toggleModal() {
     setOpenModal(!openModal)
+  }
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    setSearch(event.target.value)
   }
 
   function handleClick(product: ProductData | null) {
@@ -37,12 +43,18 @@ export function List() {
     }
   }
 
+  const filteredProducts =
+    search.length > 0
+      ? data?.filter((product) => product.name.includes(search))
+      : data
+
   return (
-    <div className="flex flex-col justify-center">
-      <div className="flex flex-wrap items-center justify-between px-12 py-4">
-        <h2 className="mb-6 text-center text-2xl font-bold">
+    <div className="">
+      <div className="flex flex-row flex-wrap items-center justify-between px-12 py-4 md:flex-col-reverse md:justify-center md:gap-6">
+        <h2 className="mb-6 text-center text-2xl font-bold md:mb-0">
           Lista de Produto
         </h2>
+        <Search onChange={handleChange} placeholder="Pesquisar aqui..." />
         <button
           className="rounded bg-blue-500 px-4 py-3 font-bold text-white hover:bg-blue-700"
           onClick={() => handleClick(null)}
@@ -53,8 +65,8 @@ export function List() {
       <div className="flex flex-row flex-wrap items-center justify-center gap-4 px-6 py-6">
         {loading && <div>Carregando....</div>}
         {error && <div>{error}</div>}
-        {data &&
-          data.map((product: ProductData) => (
+        {filteredProducts &&
+          filteredProducts.map((product: ProductData) => (
             <div
               className="max-w-sm cursor-pointer overflow-hidden rounded bg-white shadow-lg"
               key={product.id}
@@ -94,6 +106,11 @@ export function List() {
               </div>
             </div>
           ))}
+      </div>
+      <div className="flex w-full items-center justify-center py-8">
+        <button className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700">
+          Ver mais
+        </button>
       </div>
       {openModal && (
         <Form
